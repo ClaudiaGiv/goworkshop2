@@ -26,5 +26,5 @@ func main() {
 	fmt.Println("salut!")
 	
 	fmt.Println("Hello my name is Eduard")
-
+	fmt.Println("Hello, my name is Andrei")
 }
