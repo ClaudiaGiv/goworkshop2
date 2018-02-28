@@ -1,30 +1,63 @@
 package main
 
-import "fmt"
+import (
+	"io/ioutil"
+	"fmt"
+	"encoding/json"
+	"goworkshop/importer"
+)
+
+type Animal struct{
+	NoLegS int `json:"-"`
+	NoLegs int `json:"noLegs"`
+	Name string `json:"name"`
+}
+
+type Talker interface{
+	CanTalk() bool
+}
+
+func (a Animal) CanTalk() bool{
+	return false
+}
+
+func (a Animal) String() string{
+	return fmt.Sprintf("Animal{NoLegs=%d, Name=%s}",a.NoLegs, a.Name)
+}
 
 func main() {
+	var creature Talker
+	creature = Animal{NoLegs:3, Name:"Pig",}
+	fmt.Println(creature.CanTalk())
 
-	fmt.Println("hello world!")
-	fmt.Println("My name is Claudia")
-	fmt.Println("Razvan Farte was here")
-	fmt.Println("my name is Ioan")
-	fmt.Println("Hello my name is Alex")
-	fmt.Println("And I want to merge my changes")
-	fmt.Println("hello my name is alin")
-	fmt.Println("Hello my nombre es Bogdan")
-	fmt.Println("my name is Ioan")
-	fmt.Println("salut lumeee!!!... de la Radu Dragan")
-	fmt.Println("Hello, my name is Bogdan!")
-	fmt.Println("salut!")
-	fmt.Println("Hello my name is Eduard")
-	fmt.Println("Hello, my name is Andrei")
-	fmt.Println("Hello my name is Florin!")
-	fmt.Println("salut lumeee!!!... de la Radu")
-	fmt.Println("Hello my name is Florin!")
-	fmt.Println("Hello, my name is Bogdan!")
+	fileContent, err := ioutil.ReadFile("json/animals.json")
+	if err != nil{
+		fmt.Println("Unable to open file")
+		panic(err)
+	}
+	fmt.Println(string(fileContent))
 
-	fmt.Println("salut!")
-	
-	fmt.Println("Hello my name is Eduard")
-	fmt.Println("Hello, my name is Andrei")
+	var animals []Animal
+	err = json.Unmarshal(fileContent,&animals)
+	if err!= nil {
+		fmt.Println("Unable to de-serialize the aimals")
+		panic(err)
+	}
+
+	//check the de-serialized animals
+	fmt.Println("The animals are:")
+	fmt.Println(animals)
+
+	if serializedAnimals, err := json.Marshal(animals); err != nil {
+		fmt.Println("Unable to serialize the aimals")
+		panic(err)
+	} else {
+		fmt.Println(string(serializedAnimals))
+	}
+
+
+	authors := importer.ImportAuthors()
+	fmt.Println(authors)
+	books := importer.ImportBooks()
+	fmt.Println(books)
 }
